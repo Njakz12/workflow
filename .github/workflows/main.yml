@@ -1,1 +1,35 @@
 
+
+server_config:
+  name: ubuntu-server
+  image: ubuntu-latest  # The latest version of Ubuntu
+  instance_type: t2.micro  # Change as required, e.g., t2.small, t2.large
+  key_name: my-key-pair  # Replace with your SSH key pair name
+  region: us-east-1  # Replace with your desired region
+  
+  security_group:
+    - name: ubuntu-sg
+      description: Security group for Ubuntu server
+      rules:
+        - protocol: tcp
+          port: 22  # SSH port
+          source: 0.0.0.0/0
+        - protocol: tcp
+          port: 80  # HTTP port
+          source: 0.0.0.0/0
+        - protocol: tcp
+          port: 443  # HTTPS port
+          source: 0.0.0.0/0
+
+  userdata: |
+    #!/bin/bash
+    apt-get update -y
+    apt-get upgrade -y
+    apt-get install -y apache2  # Example of installing Apache
+    systemctl start apache2
+    systemctl enable apache2
+
+output:
+  public_ip:
+    description: "Public IP address of the server"
+    value: ubuntu-server.public_ip  # Displays the server's public IP
